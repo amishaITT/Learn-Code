@@ -1,67 +1,53 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <vector>
+#include <string>
+#include <unordered_set>
+#include "csv-parser/csv.hpp"
 
+using namespace std;
 struct Location {
-    std::string name;
+    string name;
     double latitude;
     double longitude;
 };
 
-double convertToDecimal(const std::string& latStr) {
-    std::istringstream iss(latStr);
-    double degrees, minutes;
-    char degreeSign, minuteSign;
-    iss >> degrees >> degreeSign >> minutes >> minuteSign;
-    return degrees + minutes / 60.0;
-}
-
 int main() {
-    std::ifstream file("your_data.csv");
-    if (!file) {
-        std::cerr << "Error opening the file." << std::endl;
-        return 1;
+    ifstream ip("locations.csv");
+    int structindex=0;
+    vector<Location> locations;
+    Location location;
+    while (ip.good())
+    {
+        
+        getline(ip,Locations[structindex].name,',');
+        getline(ip,Locations[structindex].latitude,',');
+        getline(ip,Locations[structindex].longitude,',');
+        structindex++;
+    
     }
+    ip.close();
 
-    std::vector<Location> locations;
-    std::string line;
-    while (std::getline(file, line)) {
-        std::istringstream iss(line);
-        Location loc;
-        if (iss >> loc.name) {
-            std::string latStr, lonStr;
-            if (iss >> latStr >> lonStr) {
-                loc.latitude = convertToDecimal(latStr);
-                loc.longitude = std::stod(lonStr);
-                locations.push_back(loc);
+    // Create clusters
+    vector<vector<Location>> clusters;
+    for (int locationIndex = 0; i < locations.size(); locationIndex++)
+    {
+        vector<Location> cluster;
+        cluster.push_back(locations[locationIndex]);
+        for (int nextlocationIndex = locationIndex+1; nextlocationIndex < locations.size(); nextlocationIndex++)
+        {
+            if (locations[locationIndex].latitude-locations[nextlocationIndex]<=10)
+            {
+                cluster.push_back(locations[nextLocationIndex]);
+                locations.erase(nextlocationIndex);
             }
+            
+        }
+        if (!cluster.empty()) {
+            clusters.push_back(cluster);
         }
     }
-
-    double clusterRadius = 10.0;
-    std::vector<std::vector<Location>> clusters;
-
-    for (const Location& loc : locations) {
-        bool added = false;
-        for (std::vector<Location>& cluster : clusters) {
-            if (std::abs(loc.latitude - cluster[0].latitude) <= clusterRadius) {
-                cluster.push_back(loc);
-                added = true;
-                break;
-            }
-        }
-        if (!added) {
-            clusters.push_back({loc});
-        }
-    }
-
-    for (size_t i = 0; i < clusters.size(); i++) {
-        std::cout << "Cluster " << i + 1 << ":" << std::endl;
-        for (const Location& loc : clusters[i]) {
-            std::cout << loc.name << " (Lat: " << loc.latitude << ", Lon: " << loc.longitude << ")" << std::endl;
-        }
-    }
+    
 
     return 0;
 }
