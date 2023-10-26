@@ -1,0 +1,42 @@
+#include <iostream>
+using namespace std;
+
+class Human{
+    public:
+    int height;
+    int weight;
+    int age;
+
+    public:
+    int getAge(){
+        return this->age;
+    }
+    void setWeight(int inputweight){
+        this->weight=inputweight;
+
+    }
+    void setweight(int inputweight,int additionalweight){
+        this->weight=inputweight+additionalweight;
+    }
+     int getWeight(){
+        return this->weight;
+    }
+};
+
+class Male:public Human{
+    public:
+    string Name;
+
+    void sleep(){
+        cout<<"Male sleeping"<<endl;
+    }
+};
+
+int main(){
+    Male male1;
+    male1.setWeight(19);
+    cout<<male1.getWeight()<<endl;
+    male1.setWeight(12);
+    cout<<male1.getWeight()<<endl;
+    return 0;
+}
